@@ -111,7 +111,7 @@ app.use((err, req, res, next) => {
 });
 
 // google verification file serving
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
