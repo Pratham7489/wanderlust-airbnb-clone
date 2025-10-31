@@ -136,7 +136,8 @@ body {
     top: 0;
     height: 100%;
     pointer-events: none;
-    width: 2rem;
+    width: 1.5rem;
+    z-index: 5;
 }
 
 .fade-left {

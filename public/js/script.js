@@ -38,7 +38,16 @@
   //  Position scroll at the "middle" set
   let filterWidth = filters[0].offsetWidth + parseFloat(getComputedStyle(filters[0]).marginRight);  
   let middleStart = totalFilters * filterWidth;               
-  wrapper.scrollLeft = middleStart;                           
+  wrapper.scrollLeft = middleStart;   
+  
+  // Reset scroll to loop infinitely
+  wrapper.addEventListener("scroll", () => {                  
+    if (wrapper.scrollLeft <= 0) {                            
+      wrapper.scrollLeft = middleStart;                       
+     } else if (wrapper.scrollLeft >= middleStart * 2) {       
+      wrapper.scrollLeft = middleStart;                       
+    }                                                         
+  }); 
 
   function getScrollStep() {
       const firstFilter = wrapper.querySelector(".filter");
@@ -57,18 +66,8 @@
   }
 
   rightArrow.addEventListener("click", scrollNext);
-  leftArrow.addEventListener("click", scrollPrev);
-
-  // Reset scroll to loop infinitely
-  wrapper.addEventListener("scroll", () => {                  
-    if (wrapper.scrollLeft <= 0) {                            
-      wrapper.scrollLeft = middleStart;                       
-     } else if (wrapper.scrollLeft >= middleStart * 2) {       
-      wrapper.scrollLeft = middleStart;                       
-    }                                                         
-  });                                                         
+  leftArrow.addEventListener("click", scrollPrev);                                                        
         
-
   // Recompute step on resize (keeps behavior consistent)
    window.addEventListener('resize', () => {
       // nothing to store, getScrollStep reads computed sizes when used

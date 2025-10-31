@@ -3,12 +3,49 @@
     const mapToken = "<%= process.env.MAP_TOKEN %>"; 
     const listing = <%- JSON.stringify(listing) %>;
 </script>
+<style>
+.btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.btns .btn {
+  flex: none;                    
+  width: 120px;          
+  font-size: 0.95rem;
+  padding: 0.45rem 0;
+  border-radius: 0.4rem;
+  text-align: center;
+}
+
+/* stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .btns {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 4rem;
+  }
+
+  .btns .btn {
+    width: 110px;
+    font-size: 0.9rem;
+  }
+}
+
+</style>
 <body>
+    <!-- listing show page     -->
+
     <div class="row mt-3">
+     
+    <!-- Listing title div    -->
     <div class="col-8 offset-3">
       <h3><b><%= listing.title %></b></h3>
     </div>
-
+    
+     <!-- Listing card with its image and details    -->
     <div class="card col-6 offset-3 show-card listing-card">
         <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
@@ -22,19 +59,19 @@
             <p class="card-text"> Country: <%= listing.country %></p>   
         </div>
     </div>
-    
+
+    <!-- Edit and Delete buttons, only visible to the owner of the listing -->
     <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
-    <div class="btns">
-        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn col-md-1 offset-3">Edit</a>
+    <div class="btns col-6 offset-3 d-flex justify-content-between align-items-center mt-3">
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
         
-        
-        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-            <button class="btn btn-dark pe-2  col-12 offset-10">Delete</button>
+        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="m-0">
+            <button class="btn btn-dark delete-btn">Delete</button>
         </form>
     </div>
     <% } %>
     
-    
+    <!-- reviews section -->
     <div class="col-6 offset-3 mb-3">
         <% if(currUser) { %>
         <hr>    
@@ -123,7 +160,9 @@
                     <p class="card-text"><%= review.comment %></p>
 
                     <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="d-flex justify-content-end">
-                        <button class="btn btn-sm btn-dark  mb-3">Delete</button>
+                        <% if(currUser && review.author._id.equals(currUser._id)) { %>
+                            <button class="btn btn-sm btn-dark mb-3">Delete</button>
+                        <% } %>
                     </form>
                 </div>
             </div>
