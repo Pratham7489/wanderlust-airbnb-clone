@@ -110,10 +110,8 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error.ejs", {message});
 });
 
-// Port Listening
-// app.listen(8080, () => {
-//   console.log('Server is listening to port 8080');
-// });
+// google verification file serving
+app.use(express.static('public'));
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
