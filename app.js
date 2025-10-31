@@ -110,9 +110,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error.ejs", {message});
 });
 
-// google verification file serving
-app.use(express.static(path.join(__dirname, 'public')));
-
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`); 
