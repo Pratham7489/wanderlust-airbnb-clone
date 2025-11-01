@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wanderlust-airbnb-clone-242w.onrender.com/sitemap.xml
