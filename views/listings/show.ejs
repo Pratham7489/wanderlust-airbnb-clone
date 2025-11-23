@@ -4,6 +4,18 @@
     const listing = <%- JSON.stringify(listing) %>;
 </script>
 <style>
+.title-center {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+.show-img {
+    height: 16rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    border: 2px solid #ccc !important;
+    border-radius: 12px;
+}    
 .btns {
   display: flex;
   justify-content: center;
@@ -19,21 +31,91 @@
   border-radius: 0.4rem;
   text-align: center;
 }
+/* Uniform white-card look for Reviews */
+.review-card {
+    padding: 1rem;           
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+/* Make the whole Review Section match Map spacing */
+.review-section {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* On mobile, full-width clean spacing */
+@media(max-width: 768px) {
+    .review-card {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Reduce star size in review display */
+.starability-result {
+    transform: scale(0.7);        /* shrink stars */
+    transform-origin: left center;
+}
+
+/* Reduce star size in rating input form */
+.starability-slot label {
+    font-size: 1.4rem !important; /* default is 2rem; reduce here */
+}
+
+/* Reduce spacing between clickable stars */
+.starability-slot label::before {
+    margin-right: 2px !important;
+}
+
+/* Map styling */
+#map {
+  width: 100%;
+  height: 300px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
 
 /* stack vertically on smaller screens */
 @media (max-width: 768px) {
   .btns {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-left: 4rem;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center;
+    gap: 3.5rem !important;
+    padding: 0 0.5rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
   }
 
   .btns .btn {
-    width: 110px;
-    font-size: 0.9rem;
-  }
+    flex: 1 1 auto;           
+    max-width: 150px;       
+    padding: 0.6rem 0;
+    text-align: center;
+  }  
 }
 
+/* Apply a comfortable width on mobile */
+@media(max-width: 768px) {
+  .show-card, 
+  .btns, 
+  .review-wrapper, 
+  #map {
+    width: 100%;
+  }
+
+  .listing-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+}
 </style>
 <body>
     <!-- listing show page     -->
@@ -41,12 +123,12 @@
     <div class="row mt-3">
      
     <!-- Listing title div    -->
-    <div class="col-8 offset-3">
+    <div class="col-12 title-center px-3">
       <h3><b><%= listing.title %></b></h3>
     </div>
     
      <!-- Listing card with its image and details    -->
-    <div class="card col-6 offset-3 show-card listing-card">
+    <div class="card col-lg-6 offset-lg-3 col-12 offset-0 show-card listing-card px-3">
         <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
             <h5 class="card-title mt-2"></h5>
@@ -62,7 +144,7 @@
 
     <!-- Edit and Delete buttons, only visible to the owner of the listing -->
     <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
-    <div class="btns col-6 offset-3 d-flex justify-content-between align-items-center mt-3">
+    <div class="btns col-lg-6 offset-lg-3 col-12 offset-0 d-flex justify-content-between align-items-center mt-3 px-3">
         <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
         
         <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="m-0">
@@ -72,7 +154,7 @@
     <% } %>
     
     <!-- reviews section -->
-    <div class="col-6 offset-3 mb-3">
+    <div class="col-lg-6 offset-lg-3 col-12 offset-0 mb-3 px-3">
         <% if(currUser) { %>
         <hr>    
         <h4>Leave a Review</h4>
@@ -147,31 +229,37 @@
 
         <% if(listing.reviews.length > 0) { %>
         <hr>
-        <div class="row">
-        <p><b>All Reviews</b></p>
-        <% for(review of listing.reviews) { %>
-            <div class="card col-6 ms-3 mb-3">
-                <div class="card-body mt-3">
-                    <h6 class="card-title"><b>@<%= review.author.username %></b></h6>
-                    <p 
-                       class="starability-result  card-text" 
-                       data-rating="<%= review.rating %>"
-                    ></p>
-                    <p class="card-text"><%= review.comment %></p>
+        <div class="row review-section">
+            <p><b>All Reviews</b></p>
 
-                    <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="d-flex justify-content-end">
+            <% for(review of listing.reviews) { %>
+                <div class="col-lg-6 col-12 mb-3">
+                    <div class="review-card">
+                        <h6 class="card-title"><b>@<%= review.author.username %></b></h6>
+                        <p 
+                           class="starability-result  card-text" 
+                           data-rating="<%= review.rating %>"
+                            ></p>
+                        <p class="card-text"><%= review.comment %></p>
+
                         <% if(currUser && review.author._id.equals(currUser._id)) { %>
-                            <button class="btn btn-sm btn-dark mb-3">Delete</button>
+                        <form 
+                            method="POST" 
+                            action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" 
+                            class="d-flex justify-content-end">
+                            
+                            <button class="btn btn-sm btn-dark">Delete</button>
+                            
+                        </form>
                         <% } %>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        <% } %>  
+            <% } %>  
         </div>
         <% } %>
     </div>
 
-    <div class="col-6 offset-3 my-3">
+    <div class="col-lg-6 offset-lg-3 col-12 offset-0 my-4 px-3">
         <h3>Where you'll be</h3>
         <div id="map"></div>
     </div>
