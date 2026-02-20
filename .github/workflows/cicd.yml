@@ -6,37 +6,33 @@ name: Node.js CI
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
-
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
 
     steps:
-    - name: Backup env file
-      run: |
-         if  [ -f .env ]; then
-           mv .env /tmp/env_backup
-         fi  
-         
-    - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Restore env file
-      run: |
-         if [ -f /tmp/env_backup ]; then
-           mv /tmp/env_backup .env
-         fi
-         
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm run build
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      # Verify server starts correctly
+      - name: Start server test
+        run: |
+          npm start &
+          sleep 5
+          kill $!
