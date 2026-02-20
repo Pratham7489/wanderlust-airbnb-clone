@@ -32,6 +32,13 @@ jobs:
 
       # Verify server starts correctly
       - name: Start server test
+        env:
+          ATLASDB_URL: ${{ secrets.ATLASDB_URL }}
+          CLOUDE_API_KEY: ${{ secrets.CLOUDE_API_KEY }}
+          CLOUDE_API_SECERET: ${{ secrets.CLOUDE_API_SECERET }}
+          COLUDE_NAME: ${{ secrets.COLUDE_NAME }}
+          MAP_TOKEN: ${{ secrets.MAP_TOKEN }}
+          SECRET: ${{ secrets.SECRET }}
         run: |
           npm start &
           sleep 5
