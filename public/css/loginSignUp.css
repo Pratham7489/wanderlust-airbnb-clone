@@ -1,0 +1,10 @@
+/* Responsive text for login/signup link */
+.auth-text {
+    font-size: 0.75rem; /* Small on mobile */
+}
+
+@media (min-width: 768px) {
+    .auth-text {
+        font-size: 1rem; /* Normal size on desktop */
+    }
+}
